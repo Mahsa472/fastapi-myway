@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Depends,status, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from schema import PostCreate, PostResponse
+from schema import PostCreate,PostUpdate, PostResponse
 
 from datetime import datetime, timezone
 
@@ -84,6 +84,21 @@ def update_post_full(post_id:int, post_data: PostCreate, db:Session = Depends(ge
 # in patch the user can change only the fields, that they want and not change fields will return as before
 # it cannot use the PostCreate class because the objects are obligatory and not optional
 @app.patch("/api/posts/{post_id}",response_model=PostResponse)
+def update_post_partial(post_id:int, post_data:PostUpdate, db:Session=Depends(get_db)):
+    post = db.get(models.Post, post_id)
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Post not found",
+        )
+
+    updated_post = post_data.model_dump(exclude_unset=True)
+    for field, value in updated_post.items():
+        setattr(post, field, value)
+
+    db.commit()
+    db.refresh(post)
+    return post
 
 
 @app.delete("/api/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
