@@ -34,3 +34,4 @@ class Post(Base):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     author: Mapped[str] = mapped_column(String(50), nullable=False)
     created_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda: datetime.now(UTC))
+    updated_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True, default=None, onupdate=lambda: datetime.now(UTC) )

@@ -22,3 +22,4 @@ class PostResponse(PostBase):
 
     id: int
     created_date: datetime 
+    updated_date: datetime | None
