@@ -7,8 +7,9 @@ To be able to talk to db we need sqlalchemy
 
 
 from pydantic import BaseModel, Field, EmailStr
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime, UTC
+
 
 # importing some column types
 from sqlalchemy import(
@@ -26,12 +27,25 @@ from sqlalchemy.orm import (
 
 from database import Base
 
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    full_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    email: Mapped[str] = mapped_column(String(120),index=True, nullable=False, unique=True)
+    user_created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda: datetime.now(UTC))
+    posts: Mapped[List["Post"]] = relationship(back_populates="author") # define a relationship many to one between posts and author
+
+
+
 class Post(Base):
     __tablename__ = "posts"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True) #primary key will be written automatically by db and index is for faster search
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    author: Mapped[str] = mapped_column(String(50), nullable=False)
     created_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda: datetime.now(UTC))
     updated_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True, default=None, onupdate=lambda: datetime.now(UTC) )
+    author: Mapped[User] = relationship(back_populates="posts") # define a relationship one to many between author and posts
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
