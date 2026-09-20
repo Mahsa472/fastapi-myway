@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+
+### dotenv ###
+.env
+
+*sqlite3
+*.db
+
+Icon
+
+# Thumbnails
+._*
+media/
