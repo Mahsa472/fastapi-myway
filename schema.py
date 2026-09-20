@@ -1,5 +1,10 @@
-from pydantic import BaseModel, Field, EmailStr, ConfigDict
-from typing import Optional
+'''
+Schema.py includes pydantic classes.
+Here we define what we expect to recieve from client
+and what we reply to a request.
+'''
+from pydantic import BaseModel, Field, ConfigDict
+
 from datetime import datetime
 
 
