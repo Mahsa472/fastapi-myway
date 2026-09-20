@@ -16,9 +16,9 @@ DATA_DIR.mkdir(exist_ok=True)
 # engine = the connection to the DB
 # session = one unit of work (one request's worth of reads/writes) over that connection
 # SessionLocal = the factory that produces those sessions. You configure the factory once, then spawn a session per request.
-
+DATABASE_URL = f"sqlite:///{DATA_DIR/'blog.db'}"
 engine = create_engine(
-    f"sqlite:///{DATA_DIR/'blog.db'}",
+    DATABASE_URL,
     echo=True,
     connect_args={"check_same_thread": False} # only for sqlite
 )
