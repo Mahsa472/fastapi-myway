@@ -32,10 +32,22 @@ async def get_posts(db : Annotated[AsyncSession, Depends(get_db)]):
 # whenever we want to be sure about output format, we use response_model to define the output format
 @router.post("", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
 async def create_post(new_post: PostCreate, db : Annotated[AsyncSession, Depends(get_db)]):
+    result = await db.execute(
+        select(models.User)
+        .where(models.User.id == new_post.user_id)
+    )
+    user = result.scalars().first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+
     post = models.Post(**new_post.model_dump()) # whatever comes from the client (post->PostCreate class), and then save in DB with models.Post class and add extra fields
     db.add(post)
     await db.commit()
-    await db.refresh(post)
+    await db.refresh(post, attribute_names=["author"]) # without attribute we get an greenlet error because we return post, but we did not load author form PostRespond
     return post
     
 
@@ -73,6 +85,20 @@ async def update_post_full(post_id:int, post_data: PostCreate, db : Annotated[As
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail="Post not found",
                 )
+
+    if post_data.user_id != post.user_id:
+        result = await db.execute(
+            select(models.User)
+            .where(models.User.id == post_data.user_id),
+        )
+        user = result.scalars().first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+    
     # post.title = post_data.title
     # post.content = post_data.content
     # post.author = post_data.author
@@ -100,7 +126,7 @@ async def update_post_partial(post_id:int, post_data:PostUpdate, db : Annotated[
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Post not found",
         )
-
+    # We check user_id only when it can be set, in update_partial we cannot change user_id so there is no need to check
     updated_post = post_data.model_dump(exclude_unset=True)
     for field, value in updated_post.items():
         setattr(post, field, value)
