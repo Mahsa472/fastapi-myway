@@ -17,3 +17,7 @@ Each func which has the class which has a nested field, should be called as sele
 # author is a nested object and it could be that it is not loaded atm of call
 # in sync call it will be loaded in that moment
 # in Async session it cannot make moment call therefore it should be loaded at first on the query
+
+
+Adding routers changes two things: @app will be @router and the path should be changed
+

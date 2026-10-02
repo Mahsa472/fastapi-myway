@@ -1,8 +1,8 @@
-"""initial schema from scratch including users and posts
+"""add password_hash column
 
-Revision ID: d4e394188549
+Revision ID: 8f2441d3efe5
 Revises: 
-Create Date: 2026-09-18 09:02:35.358156
+Create Date: 2026-10-02 10:34:22.246340
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd4e394188549'
+revision: str = '8f2441d3efe5'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,6 +26,7 @@ def upgrade() -> None:
     sa.Column('full_name', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('user_created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('password_hash', sa.String(length=200), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)

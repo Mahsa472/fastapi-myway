@@ -15,22 +15,35 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    pass
+    password: str = Field(min_length=8)
 
-class UserPublic(UserBase): # what returns
-    # what schema returns is a deliberate choice, not every column from models should be there
-    # put posts: list[PostResponse] only creates a loop which is not stable
+# class UserPublic(UserBase): # what returns
+#     # what schema returns is a deliberate choice, not every column from models should be there
+#     # put posts: list[PostResponse] only creates a loop which is not stable
+#     model_config = ConfigDict(from_attributes=True)
+
+#     id: int
+#     user_created_at: datetime
+
+# UserPublic inherit from UserBase and that means it has email which we don't want to show
+class UserPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    full_name: str
     user_created_at: datetime
+
+class UserPrivate(UserPublic):
+    email: EmailStr
 
 
 class UserUpdate(BaseModel): #atm user can only change the email
     email: EmailStr | None = Field(default=None, max_length=120)
 
 
-
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
 class PostBase(BaseModel):
@@ -42,7 +55,7 @@ class PostBase(BaseModel):
 
 # here is what we receive from client
 class PostCreate(PostBase):
-    user_id: int
+    pass
 
 class PostUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=100)

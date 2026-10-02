@@ -36,7 +36,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(120),index=True, nullable=False, unique=True)
     user_created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda: datetime.now(UTC))
     posts: Mapped[List["Post"]] = relationship(back_populates="author") # define a relationship many to one between posts and author
-
+    password_hash: Mapped[str] = mapped_column(String(200), nullable=False)
 
 
 class Post(Base):
