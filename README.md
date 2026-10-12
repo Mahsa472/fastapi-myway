@@ -83,4 +83,3 @@ Then open the API docs at <http://localhost:8080/docs>, or the demo frontend at 
 ## Credits
 
 Built while following [Corey Schafer's FastAPI course](https://github.com/CoreyMSchafer?tab=repositories&q=FastAPI),
-adapted my own way. My learning notes are in [NOTES.md](NOTES.md).
