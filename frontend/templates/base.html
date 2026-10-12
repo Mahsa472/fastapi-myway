@@ -1,0 +1,52 @@
+{% from "_macros.html" import avatar %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}{{ site_name }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="logo-mark">{{ site_name.split()[-1][0] }}</span>
+                <span class="logo-text">{{ site_name }}</span>
+            </a>
+            <nav class="nav">
+                {% if user %}
+                    <a href="/posts/new" class="btn btn-primary btn-sm">
+                        <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M13.6 3.1a2 2 0 0 1 2.8 2.8l-8.7 8.7-3.6.8.8-3.6z"/></svg>
+                        Write
+                    </a>
+                    <a href="/users/{{ user.id }}" class="nav-profile" title="Your profile">
+                        {{ avatar(user, "sm") }}
+                        <span class="nav-name">{{ user.full_name }}</span>
+                    </a>
+                    <a href="/account" class="nav-link">Account</a>
+                    <form method="post" action="/logout" class="inline-form">
+                        <button type="submit" class="nav-link">Log out</button>
+                    </form>
+                {% else %}
+                    <a href="/login" class="nav-link">Log in</a>
+                    <a href="/register" class="btn btn-primary btn-sm">Get started</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    {% if flash %}
+        <div class="toast" role="status">{{ flash }}</div>
+    {% endif %}
+
+    <main class="container main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">{{ site_name }} · rendered on the server with FastAPI &amp; Jinja2</div>
+    </footer>
+</body>
+</html>

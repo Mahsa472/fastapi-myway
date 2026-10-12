@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} · {% endblock %}
+
+{% block content %}
+<div class="auth">
+    <div class="auth-card confirm">
+        <div class="confirm-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M10 2.5 18.5 17h-17zM10 8v4m0 2.5v.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h1>{{ title }}</h1>
+        <p class="muted">{{ message }}</p>
+        <form method="post" action="{{ action }}" class="confirm-actions">
+            <a href="{{ cancel_url }}" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-danger">{{ confirm_label }}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

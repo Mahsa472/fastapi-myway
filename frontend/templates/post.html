@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_macros.html" import avatar, byline %}
+
+{% block title %}{{ post.title }} · {% endblock %}
+
+{% block content %}
+<article class="reading">
+    <a href="/" class="back-link">← All stories</a>
+
+    <h1 class="post-title">{{ post.title }}</h1>
+    {{ byline(post) }}
+
+    <div class="post-body">{{ post.content }}</div>
+
+    {% if user and user.id == post.user_id %}
+        <div class="post-actions">
+            <a href="/posts/{{ post.id }}/edit" class="btn btn-ghost">Edit</a>
+            <a href="/posts/{{ post.id }}/delete" class="btn btn-danger-ghost">Delete</a>
+        </div>
+    {% endif %}
+
+    <aside class="author-box">
+        {{ avatar(post.author, "lg") }}
+        <div>
+            <p class="author-box-label">Written by</p>
+            <a href="/users/{{ post.author.id }}" class="author-box-name">{{ post.author.full_name }}</a>
+            <p class="muted">Writing here since {{ post.author.user_created_at | date }}</p>
+        </div>
+    </aside>
+</article>
+{% endblock %}

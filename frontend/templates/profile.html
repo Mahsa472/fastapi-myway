@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "_macros.html" import avatar, post_card %}
+
+{% block title %}{{ author.full_name }} · {% endblock %}
+
+{% block content %}
+<section class="profile-header">
+    {{ avatar(author, "xl") }}
+    <div class="profile-info">
+        <h1>{{ author.full_name }}</h1>
+        <p class="muted">
+            Member since {{ author.user_created_at | date }}
+            · {{ posts | length }} {{ "story" if posts | length == 1 else "stories" }}
+        </p>
+    </div>
+    {% if user and user.id == author.id %}
+        <a href="/account" class="btn btn-ghost btn-sm">Edit account</a>
+    {% endif %}
+</section>
+
+{% if posts %}
+    <div class="post-grid">
+        {% for post in posts %}
+            {{ post_card(post) }}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        {% if user and user.id == author.id %}
+            <p class="empty-title">You haven't written anything yet</p>
+            <a href="/posts/new" class="btn btn-primary">Write your first story</a>
+        {% else %}
+            <p class="empty-title">No stories yet</p>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

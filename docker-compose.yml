@@ -37,6 +37,17 @@ services:
         condition: service_healthy
 
 
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "3000:8080" #host:container, open http://localhost:3000
+    environment:
+      API_URL: http://api_app:8080 # the frontend calls the api inside docker's network, by service name
+    depends_on:
+      - api_app
+
+
 
 
 

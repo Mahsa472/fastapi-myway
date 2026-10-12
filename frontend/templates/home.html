@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "_macros.html" import post_card %}
+
+{% block content %}
+<section class="hero">
+    <h1 class="hero-title">{{ site_name }}</h1>
+    <p class="hero-tagline">{{ site_tagline }}</p>
+    {% if not user %}
+        <div class="hero-actions">
+            <a href="/register" class="btn btn-primary">Start writing</a>
+            <a href="/login" class="btn btn-ghost">I have an account</a>
+        </div>
+    {% endif %}
+</section>
+
+{% if posts %}
+    {{ post_card(posts[0], featured=true) }}
+
+    {% if posts | length > 1 %}
+        <h2 class="section-title">More stories</h2>
+        <div class="post-grid">
+            {% for post in posts[1:] %}
+                {{ post_card(post) }}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="empty">
+        <p class="empty-title">No stories yet</p>
+        <p>Be the first to write something.</p>
+        <a href="{{ '/posts/new' if user else '/register' }}" class="btn btn-primary">Write the first story</a>
+    </div>
+{% endif %}
+{% endblock %}

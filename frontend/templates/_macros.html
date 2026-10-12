@@ -1,0 +1,31 @@
+{# Small reusable pieces. Import them with {% from "_macros.html" import post_card %} #}
+
+{# colored circle with initials, the same user always gets the same color #}
+{% macro avatar(person, size="md") -%}
+<span class="avatar avatar-{{ size }} avatar-c{{ person.id % 8 }}" aria-hidden="true">{{ person.full_name | initials }}</span>
+{%- endmacro %}
+
+
+{% macro byline(post) -%}
+<div class="byline">
+    {{ avatar(post.author, "sm") }}
+    <a href="/users/{{ post.author.id }}" class="byline-name">{{ post.author.full_name }}</a>
+    <span class="byline-meta">
+        <time datetime="{{ post.created_date }}" title="{{ post.created_date | date }}">{{ post.created_date | timeago }}</time>
+        <span aria-hidden="true">·</span>
+        <span>{{ post.content | reading_time }}</span>
+        {% if post.updated_date %}<span aria-hidden="true">·</span><span>edited</span>{% endif %}
+    </span>
+</div>
+{%- endmacro %}
+
+
+{# the whole card is clickable: the title link stretches over it (see .post-card in the css) #}
+{% macro post_card(post, featured=false) -%}
+<article class="post-card{% if featured %} post-card-featured{% endif %}">
+    {% if featured %}<span class="eyebrow">Latest story</span>{% endif %}
+    <h2 class="post-card-title"><a href="/posts/{{ post.id }}">{{ post.title }}</a></h2>
+    <p class="post-card-excerpt">{{ post.content | excerpt(320 if featured else 160) }}</p>
+    {{ byline(post) }}
+</article>
+{%- endmacro %}

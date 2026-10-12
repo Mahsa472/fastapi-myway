@@ -20,5 +20,8 @@ garbage.py
 
 .git/
 
+# the frontend has its own image (frontend/Dockerfile)
+frontend/
+
 # for now
 /data

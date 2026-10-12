@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ heading }} · {% endblock %}
+
+{% block content %}
+<div class="reading">
+    {# no action attribute: the form posts back to the same url (/posts/new or /posts/3/edit) #}
+    <form method="post" class="editor">
+        <p class="eyebrow">{{ heading }}</p>
+        {% if error %}<p class="alert" role="alert">{{ error }}</p>{% endif %}
+
+        {# same limits as PostBase in the backend's schema.py #}
+        <input class="editor-title" name="title" placeholder="Title" aria-label="Title"
+               required maxlength="100" value="{{ post.title or '' }}" autofocus>
+        <textarea class="editor-body" name="content" placeholder="Tell your story…" aria-label="Story"
+                  required minlength="3" rows="14">{{ post.content or '' }}</textarea>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+            <a href="{{ cancel_url }}" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

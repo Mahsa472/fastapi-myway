@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "_macros.html" import avatar %}
+
+{% block title %}Account · {% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1 class="page-title">Account</h1>
+
+    <section class="panel">
+        <div class="panel-head">
+            {{ avatar(user, "lg") }}
+            <div>
+                <p class="panel-name">{{ user.full_name }}</p>
+                <p class="muted">Member since {{ user.user_created_at | date }}</p>
+            </div>
+        </div>
+
+        <form method="post" action="/account/email" class="form">
+            {% if error %}<p class="alert" role="alert">{{ error }}</p>{% endif %}
+            <label class="field">
+                <span>Email</span>
+                <input type="email" name="email" required maxlength="120" value="{{ email }}" autocomplete="email">
+            </label>
+            <div>
+                <button type="submit" class="btn btn-primary">Update email</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel panel-danger">
+        <h2>Delete account</h2>
+        <p class="muted">Permanently delete your account and all of your stories.</p>
+        <a href="/account/delete" class="btn btn-danger-ghost">Delete account…</a>
+    </section>
+</div>
+{% endblock %}
