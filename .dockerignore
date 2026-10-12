@@ -1,0 +1,24 @@
+
+**/__pycache__/
+**/*.pyc
+
+### dotenv ###
+**/.env
+**/.venv/
+
+**/*sqlite3
+**/*.db
+
+Icon
+
+# Thumbnails
+**/._*
+media/
+
+garbage.py
+
+
+.git/
+
+# for now
+/data
