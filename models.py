@@ -35,7 +35,7 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(50), nullable=False)
     email: Mapped[str] = mapped_column(String(120),index=True, nullable=False, unique=True)
     user_created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default= lambda: datetime.now(UTC))
-    posts: Mapped[List["Post"]] = relationship(back_populates="author") # define a relationship many to one between posts and author
+    posts: Mapped[List["Post"]] = relationship(back_populates="author", cascade="all, delete-orphan") # define a relationship many to one between posts and author, deleting a user also deletes their posts
     password_hash: Mapped[str] = mapped_column(String(200), nullable=False)
 
 

@@ -185,20 +185,20 @@ async def update_user(user_id: int,
                 detail="User not found",
             )
 
-    if user_data.email is not None and user_data.email != user.email:
-        result = await db.execute(
-            select(models.User)
-            .where(models.User.email == user_data.email),
-        )
-        existing_email = result.scalars().first()
-        if existing_email:
-            raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail="Email already registered",
-            )
-
     if user_data.email is not None:
-        user.email = user_data.email
+        new_email = user_data.email.lower() # same as create_user, emails are stored lowercase
+        if new_email != user.email:
+            result = await db.execute(
+                select(models.User)
+                .where(func.lower(models.User.email) == new_email),
+            )
+            existing_email = result.scalars().first()
+            if existing_email:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Email already registered",
+                )
+        user.email = new_email
 
     await db.commit()
     await db.refresh(user)
@@ -207,15 +207,17 @@ async def update_user(user_id: int,
 
 @router.delete("/{user_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def user_delete(user_id: int, current_user:CurrentUser, db: Annotated[AsyncSession, Depends(get_db)]):
-    result = await db.execute(
-            select(models.User)
-            .where(models.User.id == user_id),
-        )
+    
     if user_id != current_user.id:
         raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN, 
                 detail="Not authorized to delete this user",
                 )
+
+    result = await db.execute(
+                select(models.User)
+                .where(models.User.id == user_id),
+            )
     user = result.scalars().first()
     if not user:
         raise HTTPException(
